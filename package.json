@@ -2,7 +2,7 @@
   "name": "cdk_boilerplate",
   "version": "0.1.0",
   "bin": {
-    "cdk_boilerplate": "bin/cdk_boilerplate.js"
+    "apps": "bin/apps.js"
   },
   "scripts": {
     "build": "tsc",
