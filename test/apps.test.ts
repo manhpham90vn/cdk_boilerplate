@@ -7,7 +7,7 @@ let app: cdk.App, stack: cdk.Stack, template: Template;
 
 beforeAll(() => {
     app = new cdk.App();
-    const stack = new Main(app, process.env.ENV ?? "dev")
+    const stack = new Main(app, `${process.env.PROJECT_NAME}-${process.env.ENV}` ?? "proj-dev")
     template = Template.fromStack(stack);
 });
 

@@ -18,47 +18,60 @@ export class Main extends cdk.Stack {
             removalPolicy: RemovalPolicy.DESTROY
         })
 
+        const proj = `${process.env.PROJECT_NAME}_${process.env.ENV}`
+
         // Create VPC
         const vpc = new ec2.Vpc(this, "VPC", {
+            vpcName: `${proj}-VPC`,
             ipAddresses: ec2.IpAddresses.cidr("10.0.0.0/16"),
             enableDnsHostnames: false,
             enableDnsSupport: false,
-            maxAzs: 3,
+            maxAzs: 99,
             natGateways: 0,
             subnetConfiguration: [],
         })
 
+        const availabilityZones = vpc.availabilityZones
+
         // Create public subnets
         const publicSubnets: ec2.CfnSubnet[] = [];
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < availabilityZones.length; i++) {
             const id = `PublicSubnet-${i + 1}`
             const cidrBlock = `10.0.${16 * i}.0/20`
-            const availabilityZone = vpc.availabilityZones[i]
-            console.log(availabilityZone)
+            const availabilityZone = availabilityZones[i]
             const publicSubnet = new ec2.CfnSubnet(this, id, {
                 vpcId: vpc.vpcId,
                 cidrBlock: cidrBlock,
                 availabilityZone: availabilityZone,
                 mapPublicIpOnLaunch: true,
+                tags: [
+                    {key: 'Name', value: `${proj}_${id}`}
+                ],
             });
             publicSubnets.push(publicSubnet)
         }
 
         // Create private subnets
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < availabilityZones.length; i++) {
             const id = `PrivateSubnet-${i + 1}`
             const cidrBlock = `10.0.${16 * i + 48}.0/20`
-            const availabilityZone = vpc.availabilityZones[i]
-            console.log(availabilityZone)
+            const availabilityZone = availabilityZones[i]
             new ec2.CfnSubnet(this, id, {
                 vpcId: vpc.vpcId,
                 cidrBlock: cidrBlock,
                 availabilityZone: availabilityZone,
+                tags: [
+                    {key: 'Name', value: `${proj}_${id}`}
+                ],
             });
         }
 
         // Create Internet Gateway
-        const igw = new ec2.CfnInternetGateway(this, "InternetGateway", {})
+        const igw = new ec2.CfnInternetGateway(this, "InternetGateway", {
+            tags: [
+                {key: 'Name', value: `${proj}_InternetGateway`}
+            ],
+        })
 
         // Attach Internet Gateway to the VPC
         new ec2.CfnVPCGatewayAttachment(this, "VPCGatewayAttachment", {
@@ -68,14 +81,17 @@ export class Main extends cdk.Stack {
 
         // Create route table for public subnets
         const publicRouteTable = new ec2.CfnRouteTable(this, "PublicRouteTable", {
-            vpcId: vpc.vpcId
+            vpcId: vpc.vpcId,
+            tags: [
+                {key: 'Name', value: `${proj}_PublicRouteTable`}
+            ],
         })
 
         // Add default route to Internet Gateway in the public route table
         new ec2.CfnRoute(this, "DefaultRoute", {
             routeTableId: publicRouteTable.ref,
             destinationCidrBlock: "0.0.0.0/0",
-            gatewayId: igw.ref
+            gatewayId: igw.ref,
         })
 
         // Associate public subnets with the public route table

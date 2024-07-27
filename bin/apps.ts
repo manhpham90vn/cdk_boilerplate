@@ -5,4 +5,4 @@ import {Main} from "../lib/main";
 import 'dotenv/config'
 
 const app = new cdk.App();
-new Main(app, process.env.ENV ?? "dev");
+new Main(app, `${process.env.PROJECT_NAME}-${process.env.ENV}` ?? "proj-dev");
