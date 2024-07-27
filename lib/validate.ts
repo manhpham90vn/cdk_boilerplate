@@ -4,13 +4,15 @@ import 'dotenv/config'
 const envSchema = Joi.object().keys({
     PROJECT_NAME: Joi.string().required(),
     ENV: Joi.string().valid("dev", "prod", "stg").required(),
-    S3_BUCKET: Joi.string().required()
+    S3_BUCKET: Joi.string().required(),
+    CHATWORK_TOKEN: Joi.string().required()
 })
 
 const env = {
     PROJECT_NAME: process.env.PROJECT_NAME,
     ENV: process.env.ENV,
-    S3_BUCKET: process.env.S3_BUCKET
+    S3_BUCKET: process.env.S3_BUCKET,
+    CHATWORK_TOKEN: process.env.CHATWORK_TOKEN
 }
 
 const {value, error} = Joi.compile(envSchema).validate(env)

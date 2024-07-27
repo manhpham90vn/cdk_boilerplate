@@ -2,6 +2,9 @@ import * as cdk from 'aws-cdk-lib';
 import {RemovalPolicy} from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as targets from 'aws-cdk-lib/aws-events-targets';
 import {Construct} from 'constructs'
 import {proj, value} from "./validate";
 
@@ -96,6 +99,29 @@ export class Main extends cdk.Stack {
                 routeTableId: publicRouteTable.ref
             })
         })
+
+        const chatWorkLambda = new lambda.Function(this, "ChatWorkFunc", {
+            runtime: lambda.Runtime.NODEJS_20_X,
+            code: new lambda.AssetCode("lambda"),
+            handler: "main.handler",
+            architecture: lambda.Architecture.ARM_64,
+            timeout: cdk.Duration.seconds(10),
+            environment: {
+                CHATWORK_TOKEN: value.CHATWORK_TOKEN
+            }
+        })
+
+        const rule = new events.Rule(this, "Rule", {
+            schedule: events.Schedule.cron({
+                minute: "30",
+                hour: "9",
+                weekDay: "MON-FRI",
+                month: "*",
+                year: "*"
+            })
+        })
+
+        rule.addTarget(new targets.LambdaFunction(chatWorkLambda))
 
         // Output VPC ID
         new cdk.CfnOutput(this, "VPC_Id", {
