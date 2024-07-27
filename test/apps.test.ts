@@ -1,7 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import {Match, Template} from 'aws-cdk-lib/assertions';
 import {Main} from '../lib/main';
-import 'dotenv/config'
 import {proj, value} from "../lib/validate";
 
 let app: cdk.App, stack: cdk.Stack, template: Template;
