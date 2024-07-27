@@ -3,22 +3,17 @@ import {RemovalPolicy} from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import {Construct} from 'constructs'
+import {proj, value} from "./validate";
 
 export class Main extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
         // Create S3 bucket
-        const bucketName = process.env.S3_BUCKET;
-        if (!bucketName) {
-            throw new Error('S3_BUCKET environment variable is not set');
-        }
         new s3.Bucket(this, 'S3', {
-            bucketName: bucketName,
+            bucketName: value.S3_BUCKET,
             removalPolicy: RemovalPolicy.DESTROY
         })
-
-        const proj = `${process.env.PROJECT_NAME}_${process.env.ENV}`
 
         // Create VPC
         const vpc = new ec2.Vpc(this, "VPC", {
