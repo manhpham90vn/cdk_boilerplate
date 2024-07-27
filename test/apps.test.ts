@@ -20,3 +20,13 @@ describe('S3 bucket', () => {
         );
     });
 });
+
+describe("VPC", () => {
+    it("VPC Name", () => {
+        template.hasResourceProperties("AWS::EC2::VPC",
+            Match.objectLike({
+                Tags: Match.arrayWith([Match.objectLike({Key: "Name", Value: `${proj}-VPC`})])
+            })
+        )
+    })
+})
