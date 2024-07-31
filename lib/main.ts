@@ -102,7 +102,7 @@ export class Main extends cdk.Stack {
 
         const remindReportLambda = new lambda.Function(this, "remindReportLambda", {
             runtime: lambda.Runtime.NODEJS_20_X,
-            code: new lambda.AssetCode("remindReportLambda"),
+            code: new lambda.AssetCode("lambda/remindReportLambda"),
             handler: "main.handler",
             architecture: lambda.Architecture.ARM_64,
             timeout: cdk.Duration.seconds(10),
@@ -125,7 +125,7 @@ export class Main extends cdk.Stack {
 
         const checkNotReportLambda = new lambda.Function(this, "checkNotReportLambda", {
             runtime: lambda.Runtime.NODEJS_20_X,
-            code: new lambda.AssetCode("checkNotReportLambda"),
+            code: new lambda.AssetCode("lambda/checkNotReportLambda"),
             handler: "main.handler",
             architecture: lambda.Architecture.ARM_64,
             timeout: cdk.Duration.seconds(10),
