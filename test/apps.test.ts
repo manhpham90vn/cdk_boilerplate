@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import {Match, Template} from 'aws-cdk-lib/assertions';
-import {Main} from '../lib/main';
-import {proj, value} from "../lib/validate";
+import {Main} from '../infrastructure/main';
+import {proj, value} from "../validation/validate";
 
 let app: cdk.App, stack: cdk.Stack, template: Template;
 

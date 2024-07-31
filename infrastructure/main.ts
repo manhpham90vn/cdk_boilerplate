@@ -6,7 +6,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 import {Construct} from 'constructs'
-import {proj, value} from "./validate";
+import {proj, value} from "../validation/validate";
 
 export class Main extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
