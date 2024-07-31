@@ -100,9 +100,9 @@ export class Main extends cdk.Stack {
             })
         })
 
-        const chatWorkLambda = new lambda.Function(this, "ChatWorkFunc", {
+        const remindReportLambda = new lambda.Function(this, "remindReportLambda", {
             runtime: lambda.Runtime.NODEJS_20_X,
-            code: new lambda.AssetCode("lambda"),
+            code: new lambda.AssetCode("remindReportLambda"),
             handler: "main.handler",
             architecture: lambda.Architecture.ARM_64,
             timeout: cdk.Duration.seconds(10),
@@ -111,7 +111,7 @@ export class Main extends cdk.Stack {
             }
         })
 
-        const rule = new events.Rule(this, "Rule", {
+        const remindReportRule = new events.Rule(this, "remindReportRule", {
             schedule: events.Schedule.cron({
                 minute: "30",
                 hour: "9",
@@ -121,7 +121,30 @@ export class Main extends cdk.Stack {
             })
         })
 
-        rule.addTarget(new targets.LambdaFunction(chatWorkLambda))
+        remindReportRule.addTarget(new targets.LambdaFunction(remindReportLambda))
+
+        const checkNotReportLambda = new lambda.Function(this, "checkNotReportLambda", {
+            runtime: lambda.Runtime.NODEJS_20_X,
+            code: new lambda.AssetCode("checkNotReportLambda"),
+            handler: "main.handler",
+            architecture: lambda.Architecture.ARM_64,
+            timeout: cdk.Duration.seconds(10),
+            environment: {
+                CHATWORK_TOKEN: value.CHATWORK_TOKEN
+            }
+        })
+
+        const checkNotReportRule = new events.Rule(this, "checkNotReportRule", {
+            schedule: events.Schedule.cron({
+                minute: "15",
+                hour: "10",
+                weekDay: "MON-FRI",
+                month: "*",
+                year: "*"
+            })
+        })
+
+        checkNotReportRule.addTarget(new targets.LambdaFunction(checkNotReportLambda))
 
         // Output VPC ID
         new cdk.CfnOutput(this, "VPC_Id", {
