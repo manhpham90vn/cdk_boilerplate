@@ -139,7 +139,17 @@ export class Main extends cdk.Stack {
             }
         })
 
-        const checkNotReportRule = new events.Rule(this, "checkNotReportRule", {
+        const checkNotReportRule1 = new events.Rule(this, "checkNotReportRule1", {
+            schedule: events.Schedule.cron({
+                minute: "00",
+                hour: "10",
+                weekDay: "MON-FRI",
+                month: "*",
+                year: "*"
+            })
+        })
+
+        const checkNotReportRule2 = new events.Rule(this, "checkNotReportRule2", {
             schedule: events.Schedule.cron({
                 minute: "15",
                 hour: "10",
@@ -149,7 +159,19 @@ export class Main extends cdk.Stack {
             })
         })
 
-        checkNotReportRule.addTarget(new targets.LambdaFunction(checkNotReportLambda))
+        const checkNotReportRule3 = new events.Rule(this, "checkNotReportRule3", {
+            schedule: events.Schedule.cron({
+                minute: "30",
+                hour: "10",
+                weekDay: "MON-FRI",
+                month: "*",
+                year: "*"
+            })
+        })
+
+        checkNotReportRule1.addTarget(new targets.LambdaFunction(checkNotReportLambda))
+        checkNotReportRule2.addTarget(new targets.LambdaFunction(checkNotReportLambda))
+        checkNotReportRule3.addTarget(new targets.LambdaFunction(checkNotReportLambda))
 
         // Output VPC ID
         new cdk.CfnOutput(this, "VPC_Id", {

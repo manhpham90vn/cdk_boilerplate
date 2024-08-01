@@ -8,66 +8,6 @@ const {google} = require('googleapis');
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
-const chatWorkMap = [
-    {
-        name: "Long Nguyen The ",
-        chatWorkId: "[To:3464273]Long Nguyen The (Bee Tech - Android)",
-    },
-    {
-        name: "Don Dao Huu",
-        chatWorkId: "[To:6093734]Don Dao Huu (Bee Tech - PHP)",
-    },
-    {
-        name: "Vuong Do Quang",
-        chatWorkId: "[To:6663988]Vuong Do Quang (Bee Tech - Dev Manager)",
-    },
-    {
-        name: "Nam Tran Khac",
-        chatWorkId: "[To:6885736]Nam Tran Khac (Bee Tech - PHP)",
-    },
-    {
-        name: "Hung Nguyen The",
-        chatWorkId: "[To:7422218]Hung Nguyen The (Bee Tech - Python)",
-    },
-    {
-        name: "Nguyen Nguyen Hoang",
-        chatWorkId: "[To:7445483]Nguyen Nguyen Hoang (Bee Tech - PHP)",
-    },
-    {
-        name: "Duc Bui Trung",
-        chatWorkId: "[To:7446425]Duc Bui Trung (Bee Tech - PHP)",
-    },
-    {
-        name: "Thinh Bui Van",
-        chatWorkId: "[To:7545078]Thinh Bui Van (Bee Tech - PHP)",
-    },
-    {
-        name: "Hau Nguyen Dac",
-        chatWorkId: "[To:8081006]Hau Nguyen Dac (Bee Tech - PHP)",
-    },
-    {
-        name: "Duy Nguyen Khuong",
-        chatWorkId: "[To:8484493]Duy Nguyen Khuong (Bee Tech - Android)",
-    },
-    {
-        name: "Duong Pham Hoang",
-        chatWorkId: "[To:8820831]Duong Pham Hoang (Bee Tech - Go Lang)",
-    },
-    {
-        name: "Phong Pham Viet",
-        chatWorkId: "[To:9484774]Phong Pham Viet (Bee Tech - Flutter)",
-    },
-    {
-        name: "Truong Do Quang",
-        chatWorkId: "[To:9572282]Truong Do Quang (Bee Tech - Intern)",
-    },
-    {
-        name: "Manh Pham Van",
-        chatWorkId: "[To:3572584]Manh Pham Van (Bee Tech - Dev Manager)"
-    }
-]
-
-const message = `Chưa report hãy report luôn nhé\nhttps://docs.google.com/spreadsheets/d/${process.env.GOOGLE_SHEETS_ID}/edit?gid=286191792#gid=286191792`
 
 async function loadSavedCredentialsIfExist() {
     try {
@@ -123,48 +63,112 @@ function getFormattedDate(date) {
     return month + '/' + day + '/' + year;
 }
 
+const sendChatworkMessage = async (message) => {
+    try {
+        const response = await axios.post(`https://api.chatwork.com/v2/rooms/${process.env.CHATWORK_ROOM_ID}/messages`, `body=${encodeURIComponent(message)}&self_unread=1`, {
+            headers: {
+                'x-chatworktoken': process.env.CHATWORK_TOKEN, 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+        return {
+            success: true,
+            message: "Message sent successfully!",
+            error: null
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: "Failed to send message!",
+            error: error.message
+        }
+    }
+}
+
 exports.handler = async (event) => {
     try {
         const today = getFormattedDate(new Date())
         console.log("today", today)
+
         const auth = await authorize();
         const data = await listMajors(auth);
         const notReport = data.filter(row => row[0] === today)[0]
         console.log("raw data from google sheets", notReport)
 
+        const chatWorkMap = [
+            {
+                name: "Long Nguyen The ",
+                chatWorkId: "[To:3464273]Long Nguyen The (Bee Tech - Android)",
+            },
+            {
+                name: "Don Dao Huu",
+                chatWorkId: "[To:6093734]Don Dao Huu (Bee Tech - PHP)",
+            },
+            {
+                name: "Vuong Do Quang",
+                chatWorkId: "[To:6663988]Vuong Do Quang (Bee Tech - Dev Manager)",
+            },
+            {
+                name: "Nam Tran Khac",
+                chatWorkId: "[To:6885736]Nam Tran Khac (Bee Tech - PHP)",
+            },
+            {
+                name: "Hung Nguyen The",
+                chatWorkId: "[To:7422218]Hung Nguyen The (Bee Tech - Python)",
+            },
+            {
+                name: "Nguyen Nguyen Hoang",
+                chatWorkId: "[To:7445483]Nguyen Nguyen Hoang (Bee Tech - PHP)",
+            },
+            {
+                name: "Duc Bui Trung",
+                chatWorkId: "[To:7446425]Duc Bui Trung (Bee Tech - PHP)",
+            },
+            {
+                name: "Thinh Bui Van",
+                chatWorkId: "[To:7545078]Thinh Bui Van (Bee Tech - PHP)",
+            },
+            {
+                name: "Hau Nguyen Dac",
+                chatWorkId: "[To:8081006]Hau Nguyen Dac (Bee Tech - PHP)",
+            },
+            {
+                name: "Duy Nguyen Khuong",
+                chatWorkId: "[To:8484493]Duy Nguyen Khuong (Bee Tech - Android)",
+            },
+            {
+                name: "Duong Pham Hoang",
+                chatWorkId: "[To:8820831]Duong Pham Hoang (Bee Tech - Go Lang)",
+            },
+            {
+                name: "Phong Pham Viet",
+                chatWorkId: "[To:9484774]Phong Pham Viet (Bee Tech - Flutter)",
+            },
+            {
+                name: "Truong Do Quang",
+                chatWorkId: "[To:9572282]Truong Do Quang (Bee Tech - Intern)",
+            },
+            {
+                name: "Manh Pham Van",
+                chatWorkId: "[To:3572584]Manh Pham Van (Bee Tech - Dev Manager)"
+            }
+        ]
         const chatWorkIdDict = chatWorkMap.reduce((acc, item) => {
             acc[item.name.trim()] = item.chatWorkId;
             return acc;
         }, {});
         const namesToLookup = notReport.slice(1);
         const chatWorkIds = namesToLookup.map(name => chatWorkIdDict[name]);
+        console.log("chatWorkIds", chatWorkIds)
+
         if (chatWorkIds.length === 0) {
             console.log("Everyone has reported!")
-            return {
-                statusCode: 200, headers: {"Content-Type": "application/json"}, body: JSON.stringify({
-                    message: "Everyone has reported!", response: null
-                }),
-            };
         } else {
-            const result = chatWorkIds.join('\n') + "\n" + `Ngày ${today}\n` + message;
-            console.log("Message to report", result)
-            const response = await axios.post(`https://api.chatwork.com/v2/rooms/${process.env.CHATWORK_ROOM_ID}/messages`, `body=${encodeURIComponent(result)}&self_unread=1`, {
-                headers: {
-                    'x-chatworktoken': process.env.CHATWORK_TOKEN, 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-            });
-            return {
-                statusCode: 200, headers: {"Content-Type": "application/json"}, body: JSON.stringify({
-                    message: "Message sent successfully!", response: response.data
-                }),
-            };
+            const message = chatWorkIds.join('\n') + `\nNgày ${today}\nChưa report hãy report luôn nhé\nhttps://docs.google.com/spreadsheets/d/${process.env.GOOGLE_SHEETS_ID}/edit?gid=286191792#gid=286191792`;
+            console.log("Message to report", message)
+            const response = await sendChatworkMessage(message);
+            console.log(response)
         }
     } catch (error) {
         console.error('Error sending message:', error);
-        return {
-            statusCode: 500, headers: {"Content-Type": "application/json"}, body: JSON.stringify({
-                message: "Failed to send message", error: error.message
-            }),
-        };
     }
 }
