@@ -67,7 +67,7 @@ const chatWorkMap = [
     }
 ]
 
-const message = "Chưa report hãy report luôn nhé\n" + "https://docs.google.com/spreadsheets/d/14OVWPEHmoJD6atVf12hAoOSeILOGEvSFESAcRNrHURM/edit?gid=286191792#gid=286191792"
+const message = `Chưa report hãy report luôn nhé\nhttps://docs.google.com/spreadsheets/d/${process.env.GOOGLE_SHEETS_ID}/edit?gid=286191792#gid=286191792`
 
 async function loadSavedCredentialsIfExist() {
     try {
@@ -95,8 +95,8 @@ async function saveCredentials(client) {
 async function listMajors(auth) {
     const sheets = google.sheets({version: 'v4', auth});
     const res = await sheets.spreadsheets.values.get({
-        spreadsheetId: '14OVWPEHmoJD6atVf12hAoOSeILOGEvSFESAcRNrHURM',
-        range: 'Not Report!A2:Y1000',
+        spreadsheetId: process.env.GOOGLE_SHEETS_ID,
+        range: process.env.GOOGLE_SHEETS_RANGE,
     });
     return res.data.values
 }
@@ -130,7 +130,7 @@ exports.handler = async (event) => {
         const auth = await authorize();
         const data = await listMajors(auth);
         const notReport = data.filter(row => row[0] === today)[0]
-        console.log("notReport", notReport)
+        console.log("raw data from google sheets", notReport)
 
         const chatWorkIdDict = chatWorkMap.reduce((acc, item) => {
             acc[item.name.trim()] = item.chatWorkId;
@@ -138,21 +138,27 @@ exports.handler = async (event) => {
         }, {});
         const namesToLookup = notReport.slice(1);
         const chatWorkIds = namesToLookup.map(name => chatWorkIdDict[name]);
-        const result = chatWorkIds.join('\n') + "\n" + message;
-        console.log("result", result)
-
-        const apiToken = process.env.CHATWORK_TOKEN
-        const roomId = '311928965';
-        const response = await axios.post(`https://api.chatwork.com/v2/rooms/${roomId}/messages`, `body=${encodeURIComponent(result)}&self_unread=1`, {
-            headers: {
-                'x-chatworktoken': apiToken, 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        });
-        return {
-            statusCode: 200, headers: {"Content-Type": "application/json"}, body: JSON.stringify({
-                message: "Message sent successfully!", response: response.data
-            }),
-        };
+        if (chatWorkIds.length === 0) {
+            console.log("Everyone has reported!")
+            return {
+                statusCode: 200, headers: {"Content-Type": "application/json"}, body: JSON.stringify({
+                    message: "Everyone has reported!", response: null
+                }),
+            };
+        } else {
+            const result = chatWorkIds.join('\n') + "\n" + `Ngày ${today}\n` + message;
+            console.log("Message to report", result)
+            const response = await axios.post(`https://api.chatwork.com/v2/rooms/${process.env.CHATWORK_ROOM_ID}/messages`, `body=${encodeURIComponent(result)}&self_unread=1`, {
+                headers: {
+                    'x-chatworktoken': process.env.CHATWORK_TOKEN, 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            });
+            return {
+                statusCode: 200, headers: {"Content-Type": "application/json"}, body: JSON.stringify({
+                    message: "Message sent successfully!", response: response.data
+                }),
+            };
+        }
     } catch (error) {
         console.error('Error sending message:', error);
         return {

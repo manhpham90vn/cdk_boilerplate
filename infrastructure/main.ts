@@ -107,7 +107,9 @@ export class Main extends cdk.Stack {
             architecture: lambda.Architecture.ARM_64,
             timeout: cdk.Duration.seconds(10),
             environment: {
-                CHATWORK_TOKEN: value.CHATWORK_TOKEN
+                CHATWORK_TOKEN: value.CHATWORK_TOKEN,
+                CHATWORK_ROOM_ID: value.CHATWORK_ROOM_ID,
+                GOOGLE_SHEETS_ID: value.GOOGLE_SHEETS_ID
             }
         })
 
@@ -130,7 +132,10 @@ export class Main extends cdk.Stack {
             architecture: lambda.Architecture.ARM_64,
             timeout: cdk.Duration.seconds(10),
             environment: {
-                CHATWORK_TOKEN: value.CHATWORK_TOKEN
+                CHATWORK_TOKEN: value.CHATWORK_TOKEN,
+                CHATWORK_ROOM_ID: value.CHATWORK_ROOM_ID,
+                GOOGLE_SHEETS_ID: value.GOOGLE_SHEETS_ID,
+                GOOGLE_SHEETS_RANGE: value.GOOGLE_SHEETS_RANGE
             }
         })
 
