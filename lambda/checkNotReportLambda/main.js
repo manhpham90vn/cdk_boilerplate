@@ -32,7 +32,7 @@ async function saveCredentials(client) {
     await fs.writeFile(TOKEN_PATH, payload);
 }
 
-async function getGoogleShetsData(auth) {
+async function getGoogleSheetsData(auth) {
     const sheets = google.sheets({version: 'v4', auth});
     const res = await sheets.spreadsheets.values.get({
         spreadsheetId: process.env.GOOGLE_SHEETS_ID,
@@ -64,11 +64,16 @@ function getFormattedDate(date) {
 }
 
 const sendChatworkMessage = async (message) => {
+    const url = `https://api.chatwork.com/v2/rooms/${process.env.CHATWORK_ROOM_ID}/messages`
+    const data = `body=${encodeURIComponent(message)}&self_unread=1`
+    const headers = {
+        'x-chatworktoken': process.env.CHATWORK_TOKEN,
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }
+
     try {
-        const response = await axios.post(`https://api.chatwork.com/v2/rooms/${process.env.CHATWORK_ROOM_ID}/messages`, `body=${encodeURIComponent(message)}&self_unread=1`, {
-            headers: {
-                'x-chatworktoken': process.env.CHATWORK_TOKEN, 'Content-Type': 'application/x-www-form-urlencoded',
-            },
+        const response = await axios.post(url, data, {
+            headers: headers,
         });
         return {
             success: true,
@@ -90,7 +95,7 @@ exports.handler = async (event) => {
         console.log("today", today)
 
         const auth = await authorize();
-        const data = await getGoogleShetsData(auth);
+        const data = await getGoogleSheetsData(auth);
         const notReport = data.filter(row => row[0] === today)[0]
         console.log("raw data from google sheets", notReport)
 

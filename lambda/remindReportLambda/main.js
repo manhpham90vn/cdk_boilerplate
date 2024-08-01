@@ -1,11 +1,16 @@
 const axios = require('axios');
 
 const sendChatworkMessage = async (message) => {
+    const url = `https://api.chatwork.com/v2/rooms/${process.env.CHATWORK_ROOM_ID}/messages`
+    const data = `body=${encodeURIComponent(message)}&self_unread=1`
+    const headers = {
+        'x-chatworktoken': process.env.CHATWORK_TOKEN,
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }
+
     try {
-        const response = await axios.post(`https://api.chatwork.com/v2/rooms/${process.env.CHATWORK_ROOM_ID}/messages`, `body=${encodeURIComponent(message)}&self_unread=1`, {
-            headers: {
-                'x-chatworktoken': process.env.CHATWORK_TOKEN, 'Content-Type': 'application/x-www-form-urlencoded',
-            },
+        const response = await axios.post(url, data, {
+            headers: headers,
         });
         return {
             success: true,
