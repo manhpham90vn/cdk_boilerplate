@@ -100,6 +100,12 @@ export class Main extends cdk.Stack {
             })
         })
 
+        const layer = new lambda.LayerVersion(this, "layer", {
+            code: lambda.Code.fromAsset("lambda/layer"),
+            compatibleRuntimes: [lambda.Runtime.NODEJS_20_X],
+            compatibleArchitectures: [lambda.Architecture.ARM_64]
+        })
+
         const remindReportLambda = new lambda.Function(this, "remindReportLambda", {
             runtime: lambda.Runtime.NODEJS_20_X,
             code: new lambda.AssetCode("lambda/remindReportLambda"),
@@ -110,7 +116,10 @@ export class Main extends cdk.Stack {
                 CHATWORK_TOKEN: value.CHATWORK_TOKEN,
                 CHATWORK_ROOM_ID: value.CHATWORK_ROOM_ID,
                 GOOGLE_SHEETS_ID: value.GOOGLE_SHEETS_ID
-            }
+            },
+            layers: [
+                layer
+            ]
         })
 
         const remindReportRule = new events.Rule(this, "remindReportRule", {
@@ -136,7 +145,10 @@ export class Main extends cdk.Stack {
                 CHATWORK_ROOM_ID: value.CHATWORK_ROOM_ID,
                 GOOGLE_SHEETS_ID: value.GOOGLE_SHEETS_ID,
                 GOOGLE_SHEETS_RANGE: value.GOOGLE_SHEETS_RANGE
-            }
+            },
+            layers: [
+                layer
+            ]
         })
 
         const checkNotReportRule1 = new events.Rule(this, "checkNotReportRule1", {
