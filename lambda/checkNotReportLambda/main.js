@@ -32,7 +32,7 @@ async function saveCredentials(client) {
     await fs.writeFile(TOKEN_PATH, payload);
 }
 
-async function listMajors(auth) {
+async function getGoogleShetsData(auth) {
     const sheets = google.sheets({version: 'v4', auth});
     const res = await sheets.spreadsheets.values.get({
         spreadsheetId: process.env.GOOGLE_SHEETS_ID,
@@ -90,7 +90,7 @@ exports.handler = async (event) => {
         console.log("today", today)
 
         const auth = await authorize();
-        const data = await listMajors(auth);
+        const data = await getGoogleShetsData(auth);
         const notReport = data.filter(row => row[0] === today)[0]
         console.log("raw data from google sheets", notReport)
 
