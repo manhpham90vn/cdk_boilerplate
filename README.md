@@ -9,7 +9,7 @@ npx cdk bootstrap
 ## Deploy
 
 ```shell
-npx cdk deploy
+npx cdk deploy -all
 ```
 
 ## Test

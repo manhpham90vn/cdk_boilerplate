@@ -10,6 +10,8 @@ const envSchema = Joi.object().keys({
   CHATWORK_LEADER_ROOM_ID: Joi.string().required(),
   GOOGLE_SHEETS_DAILY_REPORT_ID: Joi.string().required(),
   GOOGLE_SHEETS_DAILY_REPORT_RANGE: Joi.string().required(),
+  LAMBDA_FUNCTION_NAME: Joi.string().required(),
+  LAMBDA_FUNCTION_ARN: Joi.string().required(),
 });
 
 const env = {
@@ -22,6 +24,8 @@ const env = {
   GOOGLE_SHEETS_DAILY_REPORT_ID: process.env.GOOGLE_SHEETS_DAILY_REPORT_ID,
   GOOGLE_SHEETS_DAILY_REPORT_RANGE:
     process.env.GOOGLE_SHEETS_DAILY_REPORT_RANGE,
+  LAMBDA_FUNCTION_NAME: process.env.LAMBDA_FUNCTION_NAME,
+  LAMBDA_FUNCTION_ARN: process.env.LAMBDA_FUNCTION_ARN,
 };
 
 const { value, error } = Joi.compile(envSchema).validate(env);

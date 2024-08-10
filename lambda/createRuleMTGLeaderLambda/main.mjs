@@ -3,8 +3,7 @@ import path from "path";
 import process from "process";
 import { authenticate } from "@google-cloud/local-auth";
 import { google } from "googleapis";
-import { sendChatworkMessage } from "/opt/chatwork.mjs";
-import { chatWorkMapLeaders } from "/opt/data.mjs";
+import AWS from "aws-sdk";
 
 const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
 const TOKEN_PATH = path.join(process.cwd(), "token.json");
@@ -75,8 +74,8 @@ function getFormattedTime(date) {
 
 export const handler = async (event) => {
   try {
-    // const today = getFormattedDate(new Date());
-    const today = getFormattedDate(new Date("2024-08-12T09:30:00+07:00"));
+    const today = getFormattedDate(new Date());
+    // const today = getFormattedDate(new Date("2024-08-12T11:00:00+07:00"));
     console.log("today", today);
 
     const auth = await authorize();
@@ -94,23 +93,75 @@ export const handler = async (event) => {
 
     if (leaderEvents.length > 0) {
       const date = new Date(leaderEvents[0].start.dateTime);
+      // const date = new Date("2024-08-11T01:10:00+07:00");
       const eventName = leaderEvents[0].summary;
       const eventStartDate = getFormattedDate(date);
       const eventStartTime = getFormattedTime(date);
-      console.log("event date", eventStartDate);
-      console.log("event time", eventStartTime);
       const eventLink = leaderEvents[0].hangoutLink;
-      const message = `${chatWorkMapLeaders}\nLịch họp ${eventName} vào lúc ${eventStartTime} ngày ${eventStartDate}. Link: ${eventLink}\nHãy tiến hành report đầy đủ`;
-      console.log("Message to report", message);
 
-      const response = await sendChatworkMessage(
-        message,
-        process.env.CHATWORK_LEADER_ROOM_ID,
-        process.env.CHATWORK_TOKEN
+      const eventBridge = new AWS.EventBridge();
+      const lambda = new AWS.Lambda();
+      const ruleName = "RemindLeaderReport-Rule";
+      // const minutesBeforeEvent = 1;
+      const minutesBeforeEvent = 60;
+
+      // Create rule
+      const notificationTime = new Date(
+        date.getTime() - minutesBeforeEvent * 60 * 1000
       );
-      console.log(response);
+      const cronExpression = `cron(${notificationTime.getMinutes()} ${notificationTime.getHours()} ${notificationTime.getDate()} ${
+        notificationTime.getMonth() + 1
+      } ? ${notificationTime.getFullYear()})`;
+      const ruleParams = {
+        Name: ruleName,
+        ScheduleExpression: cronExpression,
+        State: "ENABLED",
+        Description: "Remind leader to report",
+      };
+      const rule = await eventBridge.putRule(ruleParams).promise();
+
+      // Add target to rule
+      const ruleId = "1";
+      const targetParamsRemove = {
+        Rule: ruleName,
+        Ids: [ruleId],
+      };
+      await eventBridge.removeTargets(targetParamsRemove).promise();
+      const targetParamsPut = {
+        Rule: ruleName,
+        Targets: [
+          {
+            Arn: process.env.LAMBDA_FUNCTION_ARN,
+            Id: ruleId,
+            Input: JSON.stringify({
+              eventName: eventName,
+              eventStartDate: eventStartDate,
+              eventStartTime: eventStartTime,
+              eventLink: eventLink,
+            }),
+          },
+        ],
+      };
+      await eventBridge.putTargets(targetParamsPut).promise();
+
+      // Add permission for eventBridge to invoke lambda
+      const StatementId = "RemindLeaderReport-Statement";
+      await lambda
+        .removePermission({
+          FunctionName: process.env.LAMBDA_FUNCTION_NAME,
+          StatementId: StatementId,
+        })
+        .promise();
+      const permissionParams = {
+        Action: "lambda:InvokeFunction",
+        FunctionName: process.env.LAMBDA_FUNCTION_NAME,
+        Principal: "events.amazonaws.com",
+        SourceArn: rule.RuleArn,
+        StatementId: StatementId,
+      };
+      await lambda.addPermission(permissionParams).promise();
     }
   } catch (error) {
-    console.error("Error sending message:", error);
+    console.error("Error create scheduler:", error);
   }
 };
