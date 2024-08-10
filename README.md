@@ -3,17 +3,17 @@
 ## Bootstrap
 
 ```shell
-cdk bootstrap
+npx cdk bootstrap
 ```
 
 ## Deploy
 
 ```shell
-cdk deploy
+npx cdk deploy
 ```
 
 ## Test
 
 ```shell
-npm test
+npx npm test
 ```
