@@ -1,4 +1,4 @@
-export const chatWorkMap = [
+const chatWorkMap = [
   {
     name: "Long Nguyen The ",
     chatWorkId: "[To:3464273]Long Nguyen The (Bee Tech - Android)",
@@ -56,3 +56,13 @@ export const chatWorkMap = [
     chatWorkId: "[To:3572584]Manh Pham Van (Bee Tech - Dev Manager)",
   },
 ];
+
+const chatWorkMapLeaders = `
+[To:3572584]Manh Pham Van (Bee Tech - Dev Manager)
+[To:7445483]Nguyen Nguyen Hoang (Bee Tech - PHP)
+[To:6093734]Don Dao Huu (Bee Tech - PHP)
+[To:1969760]Kien Bui Hoang (Bee Tech - Comtor)
+[To:6573199]Lan Tran Thi Huong (Bee Tech - Tester)
+`;
+
+export { chatWorkMapLeaders, chatWorkMap };

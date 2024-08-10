@@ -188,6 +188,31 @@ export class Main extends cdk.Stack {
       new targets.LambdaFunction(checkNotReportLambda)
     );
 
+    const remindMTGLeader = new lambda.Function(this, "remindMTG", {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      code: new lambda.AssetCode("lambda/remindMTG"),
+      handler: "main.handler",
+      architecture: lambda.Architecture.ARM_64,
+      timeout: cdk.Duration.seconds(10),
+      environment: {
+        CHATWORK_TOKEN: value.CHATWORK_TOKEN,
+        CHATWORK_LEADER_ROOM_ID: value.CHATWORK_LEADER_ROOM_ID,
+      },
+      layers: [layer],
+    });
+
+    const remindMTGLeaderRule = new events.Rule(this, "remindMTGLeaderRule", {
+      schedule: events.Schedule.cron({
+        minute: "00",
+        hour: "01",
+        weekDay: "MON-FRI",
+        month: "*",
+        year: "*",
+      }),
+    });
+
+    remindMTGLeaderRule.addTarget(new targets.LambdaFunction(remindMTGLeader));
+
     // Output VPC ID
     new cdk.CfnOutput(this, "VPC_Id", {
       value: vpc.vpcId,

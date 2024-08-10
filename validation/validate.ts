@@ -7,6 +7,7 @@ const envSchema = Joi.object().keys({
   S3_BUCKET: Joi.string().required(),
   CHATWORK_TOKEN: Joi.string().required(),
   CHATWORK_DEV_TEAM_ROOM_ID: Joi.string().required(),
+  CHATWORK_LEADER_ROOM_ID: Joi.string().required(),
   GOOGLE_SHEETS_DAILY_REPORT_ID: Joi.string().required(),
   GOOGLE_SHEETS_DAILY_REPORT_RANGE: Joi.string().required(),
 });
@@ -17,6 +18,7 @@ const env = {
   S3_BUCKET: process.env.S3_BUCKET,
   CHATWORK_TOKEN: process.env.CHATWORK_TOKEN,
   CHATWORK_DEV_TEAM_ROOM_ID: process.env.CHATWORK_DEV_TEAM_ROOM_ID,
+  CHATWORK_LEADER_ROOM_ID: process.env.CHATWORK_LEADER_ROOM_ID,
   GOOGLE_SHEETS_DAILY_REPORT_ID: process.env.GOOGLE_SHEETS_DAILY_REPORT_ID,
   GOOGLE_SHEETS_DAILY_REPORT_RANGE:
     process.env.GOOGLE_SHEETS_DAILY_REPORT_RANGE,
