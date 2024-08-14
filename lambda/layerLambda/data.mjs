@@ -55,6 +55,14 @@ const chatWorkMap = [
     name: "Manh Pham Van",
     chatWorkId: "[To:3572584]Manh Pham Van (Bee Tech - Dev Manager)",
   },
+  {
+    name: "Huan Vu Manh",
+    chatWorkId: "[To:9626519]Huan Vu Manh (Beetech - PHP)",
+  },
+  {
+    name: "Doanh Luu Van",
+    chatWorkId: "[To:9626497]Doanh Luu Van (Bee Tech  - PHP)",
+  },
 ];
 
 const chatWorkMapLeaders = `
