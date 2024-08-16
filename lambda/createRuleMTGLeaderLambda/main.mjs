@@ -37,7 +37,7 @@ async function getGoogleCalendarData(auth) {
   const res = await calendar.events.list({
     calendarId: "primary",
     timeMin: new Date().toISOString(),
-    maxResults: 10,
+    maxResults: 50,
     singleEvents: true,
     orderBy: "startTime",
   });
@@ -82,7 +82,7 @@ export const handler = async (event) => {
     const data = await getGoogleCalendarData(auth);
 
     const todayEvents = data.filter((event) => {
-      const start = event.start.dateTime;
+      const start = event.start.dateTime || event.start.date;
       return start.includes(today);
     });
 
