@@ -8,10 +8,6 @@ const chatWorkMap = [
     chatWorkId: "[To:6093734]Don Dao Huu (Bee Tech - PHP)",
   },
   {
-    name: "Vuong Do Quang",
-    chatWorkId: "[To:6663988]Vuong Do Quang (Bee Tech - Dev Manager)",
-  },
-  {
     name: "Nam Tran Khac",
     chatWorkId: "[To:6885736]Nam Tran Khac (Bee Tech - PHP)",
   },
@@ -71,6 +67,19 @@ const chatWorkMapLeaders = `
 [To:6093734]Don Dao Huu (Bee Tech - PHP)
 [To:1969760]Kien Bui Hoang (Bee Tech - Comtor)
 [To:6573199]Lan Tran Thi Huong (Bee Tech - Tester)
+[To:8484493]Duy Nguyen Khuong (Bee Tech - Android)
 `;
 
-export { chatWorkMapLeaders, chatWorkMap };
+const trocProjectMember = `
+[To:6573199]Lan Tran Thi Huong (Bee Tech - Tester)
+[To:8484493]Duy Nguyen Khuong (Bee Tech - Android)
+[To:9484774]Phong Pham Viet (Bee Tech - Flutter)
+[To:9484806]Dieu Nguyen Thi (Bee Tech - Tester)
+[To:9572282]Truong Do Quang (Bee Tech - Intern)
+[To:9626497]Doanh Luu Van (Bee Tech  - PHP)
+[To:9626519]Huan Vu Manh (Beetech - PHP)
+[To:9651133]Phuong Vu Thi (Bee Tech - Tester)
+[To:9681462]Ngoc Nguyen Bich (Bee Tech - Comtor)
+`;
+
+export { chatWorkMapLeaders, chatWorkMap, trocProjectMember };
