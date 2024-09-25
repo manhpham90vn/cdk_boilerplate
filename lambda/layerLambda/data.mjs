@@ -71,6 +71,8 @@ const chatWorkMapLeaders = `
 `;
 
 const trocProjectMember = `
+[To:3572584]Manh Pham Van (Bee Tech - Dev Manager)
+[To:7445483]Nguyen Nguyen Hoang (Bee Tech - PHP)
 [To:6573199]Lan Tran Thi Huong (Bee Tech - Tester)
 [To:8484493]Duy Nguyen Khuong (Bee Tech - Android)
 [To:9484774]Phong Pham Viet (Bee Tech - Flutter)
@@ -80,6 +82,7 @@ const trocProjectMember = `
 [To:9626519]Huan Vu Manh (Beetech - PHP)
 [To:9651133]Phuong Vu Thi (Bee Tech - Tester)
 [To:9681462]Ngoc Nguyen Bich (Bee Tech - Comtor)
+[To:3464273]Long Nguyen The (Bee Tech - Android)
 `;
 
 export { chatWorkMapLeaders, chatWorkMap, trocProjectMember };
