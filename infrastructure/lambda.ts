@@ -175,5 +175,49 @@ export class Lambda extends cdk.Stack {
     createRuleMTGLeaderLambdaRule.addTarget(
       new targets.LambdaFunction(createRuleMTGLeaderLambda)
     );
+
+      const remindChatworkDailyMeetingTrocLambda = new lambda.Function(
+          this,
+          "remindChatworkDailyMeetingTrocLambda",
+          {
+              runtime: lambda.Runtime.NODEJS_20_X,
+              code: new lambda.AssetCode("lambda/remindChatworkDailyMeetingTrocLambda"),
+              handler: "main.handler",
+              architecture: lambda.Architecture.ARM_64,
+              timeout: cdk.Duration.seconds(10),
+              memorySize: 512,
+              environment: {
+                  CHATWORK_TOKEN: value.CHATWORK_TOKEN,
+                  CHATWORK_TROC_ROOM_ID: value.CHATWORK_TROC_ROOM_ID,
+              },
+              layers: [layer],
+          }
+      );
+
+      const remindChatworkDailyMeetingTrocRule1 = new events.Rule(this, "remindChatworkDailyMeetingTrocRule1", {
+          schedule: events.Schedule.cron({
+              minute: "30",
+              hour: "2",
+              weekDay: "MON-FRI",
+              month: "*",
+              year: "*",
+          }),
+      });
+      remindChatworkDailyMeetingTrocRule1.addTarget(
+          new targets.LambdaFunction(remindChatworkDailyMeetingTrocLambda)
+      );
+
+      const remindChatworkDailyMeetingTrocRule2 = new events.Rule(this, "remindChatworkDailyMeetingTrocRule2", {
+          schedule: events.Schedule.cron({
+              minute: "00",
+              hour: "3",
+              weekDay: "MON-FRI",
+              month: "*",
+              year: "*",
+          }),
+      });
+      remindChatworkDailyMeetingTrocRule2.addTarget(
+          new targets.LambdaFunction(remindChatworkDailyMeetingTrocLambda)
+      );
   }
 }
