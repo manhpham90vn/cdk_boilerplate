@@ -1,13 +1,13 @@
 import * as cdk from "aws-cdk-lib";
 import { Match, Template } from "aws-cdk-lib/assertions";
-import { Main } from "../infrastructure/vpc";
+import { VPC } from "../infrastructure/vpc";
 import { proj, value } from "../validation/validate";
 
 let app: cdk.App, stack: cdk.Stack, template: Template;
 
 beforeAll(() => {
   app = new cdk.App();
-  stack = new Main(app, proj);
+  stack = new VPC(app, proj);
   template = Template.fromStack(stack);
 });
 
