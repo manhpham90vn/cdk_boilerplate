@@ -202,7 +202,7 @@ export class Lambda extends cdk.Stack {
       {
         schedule: events.Schedule.cron({
           minute: "30",
-          hour: "2",
+          hour: "9",
           weekDay: "MON-FRI",
           month: "*",
           year: "*",
@@ -219,7 +219,7 @@ export class Lambda extends cdk.Stack {
       {
         schedule: events.Schedule.cron({
           minute: "00",
-          hour: "3",
+          hour: "10",
           weekDay: "MON-FRI",
           month: "*",
           year: "*",
