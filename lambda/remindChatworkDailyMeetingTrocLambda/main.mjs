@@ -1,15 +1,15 @@
 import { sendChatworkMessage } from "/opt/chatwork.mjs";
-import { trocProjectMember } from "/opt/data.mjs";
+import { trocProjectMemberDev } from "/opt/data.mjs";
 
 export const handler = async (event) => {
   const now = new Date();
   const today = getFormattedDate(now);
   let message =
-    trocProjectMember +
-    `\nNgày ${today}\nCòn 30 phút nữa. Mọi người nhớ update trạng thái task đang làm, chuẩn bị trước QA (nếu có).\nAi có vấn đề gì thì báo ngay nhé`;
+      trocProjectMemberDev +
+    `\nNgày ${today}\nCòn 30 phút nữa. Mọi người nhớ update file report nhé\nhttps://docs.google.com/spreadsheets/d/1eEQGpFBuZnTcG99VSGDlr4lxvlE0lpdZE1an8Rzh-vA/edit?gid=355429661#gid=355429661`;
 
   if ([59, 0, 1].includes(now.getMinutes())) {
-    message = trocProjectMember + `\nMọi người vào daily meeting nhé.`;
+    message = trocProjectMemberDev + `\nMọi người nhớ report nhé\nhttps://docs.google.com/spreadsheets/d/1eEQGpFBuZnTcG99VSGDlr4lxvlE0lpdZE1an8Rzh-vA/edit?gid=355429661#gid=355429661`;
   }
 
   const response = await sendChatworkMessage(

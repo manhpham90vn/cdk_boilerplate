@@ -85,4 +85,17 @@ const trocProjectMember = `
 [To:3464273]Long Nguyen The (Bee Tech - Android)
 `;
 
-export { chatWorkMapLeaders, chatWorkMap, trocProjectMember };
+const trocProjectMemberDev = `
+[To:7445483]Nguyen Nguyen Hoang (Bee Tech - PHP)
+[To:3464273]Long Nguyen The (Bee Tech - Android)
+[To:6885736]Nam Tran Khac (Bee Tech - PHP)
+[To:7446425]Duc Bui Trung (Bee Tech - PHP)
+[To:8484493]Duy Nguyen Khuong (Bee Tech - Android)
+[To:8820831]Duong Pham Hoang (Bee Tech - Go Lang)
+[To:9484774]Phong Pham Viet (Bee Tech - Flutter)
+[To:9572282]Truong Do Quang (Bee Tech - Intern)
+[To:9626497]Doanh Luu Van (Bee Tech  - PHP)
+[To:9626519]Huan Vu Manh (Beetech - PHP)
+`;
+
+export { chatWorkMapLeaders, chatWorkMap, trocProjectMember, trocProjectMemberDev };
