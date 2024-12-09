@@ -45,9 +45,9 @@ export class Lambda extends cdk.Stack {
       }),
     });
 
-    remindReportRule.addTarget(
-      new targets.LambdaFunction(remindChatworkDailyReportLambda)
-    );
+    // remindReportRule.addTarget(
+    //   new targets.LambdaFunction(remindChatworkDailyReportLambda)
+    // );
 
     const checkNotDailyReportLambda = new lambda.Function(
       this,
@@ -100,15 +100,15 @@ export class Lambda extends cdk.Stack {
       }),
     });
 
-    checkNotReportRule1.addTarget(
-      new targets.LambdaFunction(checkNotDailyReportLambda)
-    );
-    checkNotReportRule2.addTarget(
-      new targets.LambdaFunction(checkNotDailyReportLambda)
-    );
-    checkNotReportRule3.addTarget(
-      new targets.LambdaFunction(checkNotDailyReportLambda)
-    );
+    // checkNotReportRule1.addTarget(
+    //   new targets.LambdaFunction(checkNotDailyReportLambda)
+    // );
+    // checkNotReportRule2.addTarget(
+    //   new targets.LambdaFunction(checkNotDailyReportLambda)
+    // );
+    // checkNotReportRule3.addTarget(
+    //   new targets.LambdaFunction(checkNotDailyReportLambda)
+    // );
 
     new lambda.Function(this, "remindChatworkMTGLeaderLambda", {
       runtime: lambda.Runtime.NODEJS_20_X,
